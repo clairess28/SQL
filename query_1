@@ -1,0 +1,25 @@
+//Usage of variables, CASE statement, Common table expression
+
+// This SQL query is intended to show information what students have graduated the course by completing more than 80% of tasks 
+or 100% of tasks
+
+//You can find fragment of logical model using this link: 
+
+
+SET @value:= (SELECT COUNT(DISTINCT step_id) FROM step_student);
+
+WITH correct_data AS
+(SELECT student_id, COUNT(DISTINCT step_id) AS correct_step
+FROM step_student
+WHERE result = 'correct'
+GROUP BY student_id)
+
+SELECT DISTINCT student_name AS Student, ROUND((correct_step / @value * 100)) AS Progress,
+CASE
+WHEN ROUND((correct_step / @value * 100)) = 100 THEN 'Course fully completed'
+WHEN ROUND((correct_step / @value * 100)) >= 80 THEN 'Course completed'
+ELSE ''
+END AS Result
+FROM step_student LEFT JOIN correct_data USING (student_id)
+LEFT JOIN student USING (student_id)
+ORDER BY Progress DESC, Student ASC
