@@ -1,0 +1,36 @@
+//Usage of Common table expression (WITH), window function (LAG() OVER), INNER JOIN clause;
+
+// This SQL query is analyze how the student completed the modules (what order and what interval between modules);
+
+//You can find fragment of logical model using this link: 
+
+//The result of the query:
+
+
+WITH data3 AS (
+SELECT student_name, module_id, lesson_id, MAX(submission_time) AS max_time
+FROM student INNER JOIN step_student USING (student_id)
+INNER JOIN step USING (step_id)
+INNER JOIN lesson USING (lesson_id)
+WHERE result = 'correct'
+GROUP BY student_name, module_id, lesson_id
+ORDER BY student_name ),
+
+data2 AS
+(SELECT student_name
+FROM data3
+GROUP BY student_name
+HAVING COUNT(max_time) > 2),
+
+data1 AS
+(SELECT data2.student_name, data3.module_id, data3.lesson_id, max_time
+FROM data2 INNER JOIN data3 USING (student_name))
+                                         
+SELECT data1.student_name AS Студент, CONCAT(data1.module_id, '.', lesson.lesson_position) AS Урок, FROM_UNIXTIME(max_time) AS Макс_время_отправки,
+IFNULL(CEILING(((max_time - (LAG(max_time) OVER (PARTITION BY data1.student_name ORDER BY max_time)))/86400)),'-') AS Интервал
+FROM student INNER JOIN step_student USING (student_id)
+INNER JOIN step USING (step_id)
+INNER JOIN lesson USING (lesson_id)
+INNER JOIN data1 ON (data1.max_time = step_student.submission_time) AND (data1.student_name = student.student_name) AND (data1.module_id = lesson.module_id) AND (data1.lesson_id = lesson.lesson_id) 
+WHERE result = 'correct'
+ORDER BY data1.student_name, Макс_время_отправки ASC
