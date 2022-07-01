@@ -2,10 +2,6 @@
 
 // This SQL query is analyze how the student completed the modules (what order and what interval between modules);
 
-//You can find fragment of logical model using this link: 
-
-//The result of the query:
-
 
 WITH data3 AS (
 SELECT student_name, module_id, lesson_id, MAX(submission_time) AS max_time
