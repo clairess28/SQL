@@ -3,9 +3,6 @@
 // This SQL query is intended to show information what students have graduated the course by completing more than 80% of tasks 
 or 100% of tasks
 
-//You can find fragment of logical model using this link: 
-
-
 SET @value:= (SELECT COUNT(DISTINCT step_id) FROM step_student);
 
 WITH correct_data AS
