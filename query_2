@@ -2,8 +2,6 @@
 
 // This SQL query is intended to find out an average time that is needed to complete the lesson
 
-//You can find fragment of logical model using this link: 
-
 WITH data1 AS
 (SELECT student_id, lesson_id, SUM(submission_time - attempt_time) AS lesson_time
 FROM step_student INNER JOIN step USING (step_id)
