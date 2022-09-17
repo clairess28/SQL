@@ -1,6 +1,6 @@
 //Usage of Common table expression (WITH), window function (LAG() OVER), INNER JOIN clause;
 
-// This SQL query is analyze how the student completed the modules (what order and what interval between modules);
+// This SQL query analyses how the student completed the modules (what order and what interval between modules);
 
 
 WITH data3 AS (
